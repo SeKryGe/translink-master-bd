@@ -10,7 +10,7 @@ export class TodoService {
         private todoModel: mongoose.Model<Todo>
     ) {}
 
-    async findAll() {
+    async findAll(): Promise<Todo[]> {
         const todos = await this.todoModel.find()
         return todos
     }

@@ -4,13 +4,12 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
     timestamps: true,
 })
 export class Todo {
-    
+
     @Prop()
     title: string;
 
     @Prop()
-    isComplite: boolean;
-
+    isCompleted: boolean;
 }
 
 export const TodoSchema = SchemaFactory.createForClass(Todo) 

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Todo } from './todo.schema';
 import * as mongoose from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -21,6 +21,13 @@ export class TodoService {
     }
 
     async findeById(id: string): Promise<Todo> {
+
+        const isValidId = mongoose.isValidObjectId(id)
+
+        if(!isValidId) {
+            throw new BadRequestException('Please enter correct id')
+        }
+
         const todo = await this.todoModel.findById(id)
 
         if(!todo) {

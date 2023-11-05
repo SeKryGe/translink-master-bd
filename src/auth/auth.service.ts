@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './user.schema';
@@ -18,6 +18,12 @@ export class AuthService {
 
     async signUp(signUpDto: SignUpDto): Promise<{ token: string}> {
         const {firstName, lastName, email, password} = signUpDto
+
+        const exist = await this.userModel.findOne({ email})
+
+        if(exist) {
+            throw new BadRequestException('This email alredy exist')
+        }
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
@@ -52,4 +58,9 @@ export class AuthService {
 
         return {token }
     }
+
+    async getUserName(userId: string): Promise<string | null> {
+        const user = await this.userModel.findById(userId).exec();
+        return user?.firstName + user?.lastName || null;
+      }
 }

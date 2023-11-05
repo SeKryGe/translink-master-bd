@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { Todo } from './todo.schema';
 import * as mongoose from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { User } from 'src/auth/user.schema';
 
 @Injectable()
 export class TodoService {
@@ -15,8 +16,11 @@ export class TodoService {
         return todos
     }
 
-    async create(todo: Todo): Promise<Todo> {
-        const res = await this.todoModel.create(todo)
+    async create(todo: Todo, user: User): Promise<Todo> {
+
+        const data = Object.assign(todo, {user: user._id})
+
+        const res = await this.todoModel.create(data)
         return res
     }
 

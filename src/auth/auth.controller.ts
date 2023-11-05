@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signUp.dto';
 import { LoginDto } from './dto/login.dto';
@@ -16,5 +16,14 @@ export class AuthController {
     login(@Body() loginDto: LoginDto): Promise<{ token: string}> {
         return this.auth.login(loginDto)
     }
+
+    @Get(':id/name')
+  async getUserName(@Param('id') userId: string): Promise<string> {
+    const userName = await this.auth.getUserName(userId);
+    if (!userName) {
+      throw new NotFoundException('User not found');
+    }
+    return userName;
+  }
 
 }

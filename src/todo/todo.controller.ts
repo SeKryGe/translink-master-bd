@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { Todo } from './todo.schema';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('todos')
 export class TodoController {
@@ -22,14 +23,17 @@ export class TodoController {
     }
 
     @Post()
+    @UseGuards(AuthGuard())
     async createTodo(
         @Body()
-        todo: CreateTodoDto
+        todo: CreateTodoDto,
+        @Req() req
         ): Promise<Todo> {
-        return this.todoService.create(todo)
+            return this.todoService.create(todo, req.user)
     }
 
     @Put(':id')
+    @UseGuards(AuthGuard())
     async updateTodo(
         @Param('id')
         id: string,
@@ -41,6 +45,7 @@ export class TodoController {
     }
 
     @Delete(':id')
+    @UseGuards(AuthGuard())
     async deletTodo(
         @Param('id')
         id: string,
